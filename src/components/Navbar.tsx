@@ -40,7 +40,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="text-xl">🎁</span>
           </div>
           <div>
-            <h1 className="text-xl md:text-2xl font-black tracking-tight bg-gradient-to-r from-amber-200 via-amber-400 to-amber-100 bg-clip-text text-transparent drop-shadow-sm flex items-center gap-2">
+            <h1 className="text-xl md:text-2xl font-black bg-gradient-to-r from-amber-200 via-amber-400 to-amber-100 bg-clip-text text-transparent drop-shadow-sm flex items-center gap-2 pb-1 leading-normal">
               {t.appTitle}
               <Sparkles className="w-4 h-4 text-amber-400 hidden sm:inline" />
             </h1>

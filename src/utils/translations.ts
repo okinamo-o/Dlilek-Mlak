@@ -2,7 +2,7 @@ import type { Language } from '../types/game';
 
 export const translations = {
   ar: {
-    appTitle: 'دليلك ملاك',
+    appTitle: 'دليلك ملك',
     appSubtitle: 'اللعبة التونسية الشهيرة - وضع المضيف والجمهور',
     hostMode: 'لوحة تحكم المضيف',
     playMode: 'شاشة اللعب المباشر',
@@ -23,7 +23,7 @@ export const translations = {
     shuffleShort: '🎲 خلط الصناديق عشوائياً',
     presetPicks: 'خيارات سريعة:',
     customCount: 'أو عدد مخصص (4 - 30):',
-    loadTunisianPresets: '💡 تعبئة جوائز دليلك ملاك الأصلية:',
+    loadTunisianPresets: '💡 تعبئة جوائز دليلك ملك الأصلية:',
     chestsCountLabel: 'صندوقاً',
     shuffleBtn: '🎲 خلط أماكن الجوائز عشوائياً',
     shuffledAlert: 'تم خلط أماكن الجوائز في الصناديق بنجاح!',

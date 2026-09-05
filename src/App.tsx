@@ -72,7 +72,7 @@ export function App() {
 
       <footer className="w-full py-4 text-center text-xs text-slate-500 border-t border-slate-900 bg-slate-950/60 backdrop-blur-sm">
         {lang === 'ar'
-          ? 'دليلك ملاك — لعبة المتصفح التونسية الخاصة بالسهرات والبث المباشر (نسخة المضيف والجمهور)'
+          ? 'دليلك ملك — لعبة المتصفح التونسية الخاصة بالسهرات والبث المباشر (نسخة المضيف والجمهور)'
           : 'Dlilek Mlak — Jeu de soirée et livestream interactif (Version Hôte & Public)'}
       </footer>
     </div>

@@ -88,7 +88,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
 
         {/* The Big Prize Display */}
         <div className="w-full max-w-lg bg-slate-950/90 border-2 border-amber-400 rounded-2xl p-6 my-2 shadow-2xl relative overflow-hidden group">
-          <div className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-100 drop-shadow-lg">
+          <div className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-100 drop-shadow-lg pb-2 pt-1 leading-normal">
             {outcome.winLabel}
           </div>
           {outcome.winNumericValue !== null && outcome.winNumericValue > 0 && (

@@ -1,5 +1,5 @@
 /**
- * Authentic default prize presets and Tunisian governorates for Dlilek Mlak (دليلك ملاك)
+ * Authentic default prize presets and Tunisian governorates for Dlilek Mlek (دليلك ملك)
  */
 
 export interface GamePreset {

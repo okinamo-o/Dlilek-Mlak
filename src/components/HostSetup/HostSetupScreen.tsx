@@ -233,11 +233,11 @@ export const HostSetupScreen: React.FC<HostSetupScreenProps> = ({
         {/* Studio Badge */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 text-amber-300 text-xs font-black border border-amber-500/40 mb-4 shadow-sm">
           <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-          <span>{lang === 'ar' ? 'استوديو دليلك ملاك الرسمي' : 'Studio Officiel Dlilek Mlak'}</span>
+          <span>{lang === 'ar' ? 'استوديو دليلك ملك الرسمي' : 'Studio Officiel Dlilek Mlak'}</span>
         </div>
 
         {/* Main Title */}
-        <h2 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-100 via-amber-300 to-amber-200 drop-shadow-sm tracking-tight mb-3">
+        <h2 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-100 via-amber-300 to-amber-200 drop-shadow-sm leading-snug md:leading-normal pb-3 pt-1 mb-2">
           {lang === 'ar' ? 'جاهز للمغامرة والتشويق؟' : 'Prêt pour le grand frisson ?'}
         </h2>
         <p className="text-slate-300 text-sm md:text-base max-w-xl leading-relaxed mb-8">

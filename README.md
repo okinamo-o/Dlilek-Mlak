@@ -1,6 +1,6 @@
-# دليلك ملاك — Dlilek Mlak 🎁
+# دليلك ملك — Dlilek Mlek 🎁
 
-A host-controlled, TV game show web application clone of the famous Tunisian show **"Dlilek Mlak" (دليلك ملاك)** (Deal or No Deal adaptation). Built for private parties, livestreams, and projector displays.
+A host-controlled, TV game show web application clone of the famous Tunisian show **"Dlilek Mlek" (دليلك ملك)** (Deal or No Deal adaptation). Built for private parties, livestreams, and projector displays.
 
 ---
 
@@ -10,7 +10,7 @@ A host-controlled, TV game show web application clone of the famous Tunisian sho
   - Presets: 9, 12, 16, 20, 24 (Classic TV format), 26 (Deal or No Deal) + custom count (4 to 30).
   - Free-text prize entries with automatic regex parsing for monetary values (e.g. `5000 دينار`, `10 ملاين`, `0.5 DT`).
   - Manual cash override for physical / gag gifts (e.g. `كردونة`, `iPhone`, `سيارة`).
-  - One-click classic Tunisian prize templates (`💡 تعبئة جوائز دليلك ملاك الأصلية`).
+  - One-click classic Tunisian prize templates (`💡 تعبئة جوائز دليلك ملك الأصلية`).
   - Position shuffle (`🎲 خلط أماكن الجوائز`) and `localStorage` preset saving/loading.
 
 - **Contestant Play Mode (شاشة اللعب والجمهور)**:

@@ -78,7 +78,7 @@ export const BankerModal: React.FC<BankerModalProps> = ({
           <div className="text-xs font-bold text-amber-400/80 uppercase tracking-wider mb-1">
             {t.bankerOfferLabel}
           </div>
-          <div className="text-4xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-100 to-amber-400 drop-shadow-md">
+          <div className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-100 to-amber-400 drop-shadow-md pb-2 pt-1 leading-normal">
             {offerAmount.toLocaleString()}{' '}
             <span className="text-2xl md:text-3xl text-amber-400 font-bold">DT</span>
           </div>

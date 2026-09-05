@@ -11,6 +11,18 @@
     background-color: #060913;
     color: #f8fafc;
     min-height: 100vh;
+    line-height: 1.5;
+  }
+
+  /* Prevent Arabic font descenders and dots from getting cut off at the bottom */
+  [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4, [dir="rtl"] h5, [dir="rtl"] h6 {
+    line-height: 1.35;
+    padding-bottom: 0.15em;
+  }
+
+  .bg-clip-text {
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
   }
 }
 

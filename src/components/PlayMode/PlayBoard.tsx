@@ -454,7 +454,7 @@ export const PlayBoard: React.FC<PlayBoardProps> = ({
                   className="font-black text-amber-300 text-base sm:text-xl tracking-wider"
                   style={{ textShadow: '0 0 12px rgba(251,191,36,0.8), 0 2px 4px #000' }}
                 >
-                  دليلك ملاك
+                  دليلك ملك
                 </span>
                 <span className="text-[9px] sm:text-[10px] text-slate-300 font-extrabold uppercase tracking-widest mt-0.5">
                   Dlilek Mlak Studio
