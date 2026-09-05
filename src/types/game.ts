@@ -5,6 +5,7 @@ export interface Chest {
   numericValue: number | null;
   isOpen: boolean;
   isContestantBox: boolean;
+  governorate?: string;
 }
 
 export type GamePhase = 

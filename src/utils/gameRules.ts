@@ -122,7 +122,14 @@ export function parsePrizeNumericValue(label: string): number | null {
 
   const trimmed = label.trim();
 
-  // Explicit Arabic zeros or null prizes
+  // Gag prizes mapping matching official game value rankings
+  if (/مخد/i.test(trimmed)) return 2;
+  if (/فريت/i.test(trimmed)) return 75;
+  if (/دجاج|فخذ/i.test(trimmed)) return 750;
+  if (/كردون/i.test(trimmed)) return 0;
+  if (/دبوز/i.test(trimmed)) return 0.5;
+
+  // Explicit zeros
   if (/^(صفر|لاشيء|0|zero|rien)$/i.test(trimmed)) {
     return 0;
   }
@@ -131,16 +138,36 @@ export function parsePrizeNumericValue(label: string): number | null {
   const millionMatch = trimmed.match(/(\d+(?:[.,]\d+)?)\s*(?:ملاين|ملايين|مليون)/i);
   if (millionMatch) {
     const num = parseFloat(millionMatch[1].replace(',', '.'));
-    // In Tunisian dinar vernacular, "مليون" (1 million centimes) = 1,000 DT, or 1,000,000 if raw
-    // Let's standardise: if num < 500, "10 ملاين" typically means 10,000 DT
     return num * 1000;
   }
 
-  // Match standard numbers with optional commas/dots (e.g., 5,000 or 100000 or 0.1)
-  // Remove thousand-separator commas or dots when followed by 3 digits
-  const cleaned = trimmed.replace(/(\d)[,\s](\d{3})/g, '$1$2');
-  const match = cleaned.match(/(\d+(?:\.\d+)?)/);
+  // Strip currency words
+  const stripped = trimmed.replace(/[دdtDT\.ت\s]/g, (m) => m === '.' ? '.' : '').trim();
 
+  // Multi-dot format (e.g. 1.000.000 -> 1000000, 2.000.000 -> 2000000)
+  if ((trimmed.match(/\./g) || []).length >= 2) {
+    const numOnly = trimmed.replace(/[^\d]/g, '');
+    const val = parseFloat(numOnly);
+    if (!isNaN(val)) return val;
+  }
+
+  // Thousand dot format (e.g. 1.000 -> 1000, 5.000 -> 5000, 10.000 -> 10000, 300.000 -> 300000)
+  const thousandDotMatch = trimmed.match(/(\d+)\.000(?:\s*د)?/);
+  if (thousandDotMatch) {
+    const base = parseFloat(thousandDotMatch[1]);
+    if (!isNaN(base)) return base * 1000;
+  }
+
+  // Decimal dot format (e.g. 0.1 or 0.5)
+  const decimalMatch = trimmed.match(/0\.\d+/);
+  if (decimalMatch) {
+    const dec = parseFloat(decimalMatch[0]);
+    if (!isNaN(dec)) return dec;
+  }
+
+  // Clean numbers
+  const cleaned = stripped.replace(/,/g, '');
+  const match = cleaned.match(/(\d+(?:\.\d+)?)/);
   if (match) {
     const parsed = parseFloat(match[1]);
     if (!isNaN(parsed)) {

@@ -13,7 +13,7 @@ import {
 import { ChestInputCard } from './ChestInputCard';
 import type { Language, Chest } from '../../types/game';
 import { getTranslation } from '../../utils/translations';
-import { generateStarterPrizes, getPresetByCount } from '../../utils/defaultPresets';
+import { generateStarterPrizes, getPresetByCount, getGovernorate } from '../../utils/defaultPresets';
 import { parsePrizeNumericValue } from '../../utils/gameRules';
 import { sounds } from '../../utils/soundEffects';
 
@@ -28,8 +28,6 @@ export const HostSetupScreen: React.FC<HostSetupScreenProps> = ({
 }) => {
   const t = getTranslation(lang);
 
-  // Default to classic 24 chests
-  const [chestCount, setChestCount] = useState<number>(24);
   const [labels, setLabels] = useState<string[]>(() => {
     // Try to load any saved current session or default preset
     const saved = localStorage.getItem('dlilek_current_prizes');
@@ -45,6 +43,8 @@ export const HostSetupScreen: React.FC<HostSetupScreenProps> = ({
     }
     return generateStarterPrizes(24);
   });
+
+  const [chestCount, setChestCount] = useState<number>(() => labels.length);
 
   const [numericOverrides, setNumericOverrides] = useState<(number | null)[]>(() => 
     new Array(labels.length).fill(null)
@@ -178,6 +178,7 @@ export const HostSetupScreen: React.FC<HostSetupScreenProps> = ({
         numericValue: effectiveNum,
         isOpen: false,
         isContestantBox: false,
+        governorate: getGovernorate(idx + 1).nameAr,
       };
     });
 

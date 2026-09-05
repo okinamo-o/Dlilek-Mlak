@@ -1,6 +1,7 @@
+import React from 'react';
 import type { Chest, Language } from '../../types/game';
 import { getTranslation } from '../../utils/translations';
-import { Sparkles, Lock } from 'lucide-react';
+import { getGovernorate } from '../../utils/defaultPresets';
 
 interface ChestCardProps {
   chest: Chest;
@@ -21,83 +22,113 @@ export const ChestCard: React.FC<ChestCardProps> = ({
 }) => {
   const t = getTranslation(lang);
 
-  // If this is the contestant's chosen box, it stays on the podium (unopened until the end)
-  if (isContestantBox && !chest.isOpen) {
+  // Governorate name (from chest or fallback lookup)
+  const governorate = chest.governorate || getGovernorate(chest.chestNumber).nameAr;
+  const boxImgSrc = `/game_assets/boxes/box_${chest.chestNumber}.png`;
+
+  // Opened state: Box is dimmed/greyed out with revealed prize badge
+  if (chest.isOpen) {
+    const isHigh = (chest.numericValue || 0) >= 5000;
     return (
-      <div className="relative flex flex-col items-center justify-center p-3 rounded-2xl bg-gradient-to-b from-amber-500/20 via-amber-600/10 to-slate-900 border-2 border-amber-400 shadow-xl shadow-amber-500/20 opacity-90 scale-95 cursor-default select-none">
-        <div className="absolute -top-2.5 px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black text-[10px] tracking-wider uppercase shadow-md flex items-center gap-1">
-          <Sparkles className="w-3 h-3" />
-          <span>{t.yourBox}</span>
+      <div className="relative flex flex-col items-center justify-end group select-none opacity-40 grayscale-[0.6] transition-all duration-300">
+        <div className="relative w-16 sm:w-20 md:w-24 flex flex-col items-center">
+          {/* Revealed Prize Badge overlay */}
+          <div
+            className={`absolute -top-3 left-1/2 -translate-x-1/2 z-20 px-2 py-0.5 rounded-md text-[10px] sm:text-xs font-black shadow-lg border whitespace-nowrap ${
+              isHigh
+                ? 'bg-rose-950/90 text-rose-200 border-rose-500'
+                : 'bg-slate-900/95 text-cyan-300 border-cyan-500/60'
+            }`}
+          >
+            {chest.label}
+          </div>
+
+          <img
+            src={boxImgSrc}
+            alt={`${t.boxNumber} ${chest.chestNumber}`}
+            className="w-full h-auto object-contain filter brightness-75 drop-shadow"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+            }}
+          />
         </div>
-        <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-200 text-slate-950 font-black text-xl md:text-2xl flex items-center justify-center shadow-lg border border-amber-200 mt-2">
-          {chest.chestNumber}
-        </div>
-        <span className="text-[11px] font-bold text-amber-300 mt-1.5 flex items-center gap-1">
-          <Lock className="w-3 h-3" />
-          {t.boxNumber} {chest.chestNumber}
+
+        <span className="font-extrabold text-slate-400 text-xs mt-0.5 drop-shadow line-through">
+          {governorate}
         </span>
       </div>
     );
   }
 
-  // If chest is already opened: show prize content with clean TV styling
-  if (chest.isOpen) {
-    const isHigh = (chest.numericValue || 0) >= 5000;
+  // Contestant Lucky Box on stage (if placed on stage before moving to podium)
+  if (isContestantBox) {
     return (
-      <div
-        className={`relative flex flex-col items-center justify-center p-3 rounded-2xl border transition-all duration-300 select-none ${
-          isHigh
-            ? 'bg-rose-950/40 border-rose-600/40 text-rose-200'
-            : 'bg-slate-900/60 border-slate-800 text-slate-400'
-        } opacity-60 scale-95`}
-      >
-        <div className="text-[10px] font-extrabold text-slate-400 mb-0.5">
-          {t.boxNumber} {chest.chestNumber}
+      <div className="relative flex flex-col items-center justify-end group select-none">
+        <div className="relative w-16 sm:w-20 md:w-24 flex flex-col items-center animate-pulse">
+          <div className="absolute -top-2 left-1/2 -translate-x-1/2 px-1.5 py-0.2 bg-amber-400 text-slate-950 font-black text-[9px] rounded-full shadow border border-amber-200 uppercase whitespace-nowrap">
+            {t.yourBox}
+          </div>
+          <img
+            src={boxImgSrc}
+            alt={`${t.boxNumber} ${chest.chestNumber}`}
+            className="w-full h-auto object-contain drop-shadow-[0_0_12px_rgba(251,191,36,0.8)]"
+          />
         </div>
-        <div className="text-xs md:text-sm font-black text-center line-clamp-2 px-1 text-slate-200">
-          {chest.label}
-        </div>
-        <div className="text-[10px] font-semibold text-rose-400/80 mt-1 px-1.5 py-0.2 rounded bg-rose-950/40 border border-rose-900/40">
-          {t.openedBadge}
-        </div>
+        <span className="font-black text-amber-300 text-xs sm:text-sm mt-0.5 drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
+          {governorate}
+        </span>
       </div>
     );
   }
 
-  // Active unopened chest
+  // Active unopened box
   return (
     <button
+      type="button"
       onClick={canClick ? onClick : undefined}
       disabled={!canClick || isOpening}
-      className={`group relative flex flex-col items-center justify-center p-3 md:p-4 rounded-2xl transition-all duration-200 select-none cursor-pointer ${
+      className={`group relative flex flex-col items-center justify-end transition-all duration-200 select-none outline-none ${
         isOpening
-          ? 'animate-suspense bg-gradient-to-b from-amber-500/40 via-amber-600/20 to-slate-900 border-2 border-amber-300 shadow-2xl shadow-amber-500/50 scale-105 z-20'
+          ? 'scale-110 z-30 animate-suspense'
           : canClick
-          ? 'bg-gradient-to-b from-slate-800/90 via-slate-900/90 to-slate-950 border border-amber-500/30 hover:border-amber-400 hover:shadow-xl hover:shadow-amber-500/20 hover:-translate-y-1 hover:scale-[1.03] active:scale-95'
-          : 'bg-slate-900/60 border border-slate-800 opacity-70 cursor-not-allowed'
+          ? 'cursor-pointer hover:scale-105 active:scale-95'
+          : 'cursor-not-allowed opacity-75'
       }`}
     >
-      {/* 3D Chest Lid Accent */}
-      <div className="w-10 h-1.5 rounded-full bg-gradient-to-r from-amber-600 via-amber-300 to-amber-600 mb-2 shadow-sm group-hover:from-amber-400 group-hover:to-amber-400 transition-colors" />
+      <div className="relative w-16 sm:w-20 md:w-24 flex flex-col items-center">
+        {/* Suspense Glow */}
+        {isOpening && (
+          <div className="absolute inset-0 rounded-full bg-amber-400/40 blur-md animate-ping pointer-events-none" />
+        )}
 
-      {/* Big Golden Number Emblem */}
-      <div
-        className={`w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center font-black text-xl md:text-2xl shadow-lg border transition-all ${
-          isOpening
-            ? 'bg-gradient-to-tr from-amber-300 via-amber-400 to-white text-slate-950 border-white animate-pulse'
-            : 'bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 text-slate-950 border-amber-200 group-hover:scale-105 group-hover:shadow-amber-500/40'
-        }`}
-      >
-        {chest.chestNumber}
+        {/* Authentic Box Sprite (Number + Avatar) */}
+        <img
+          src={boxImgSrc}
+          alt={`${t.boxNumber} ${chest.chestNumber}`}
+          className={`w-full h-auto object-contain transition-transform duration-200 ${
+            isOpening
+              ? 'drop-shadow-[0_0_18px_rgba(251,191,36,1)]'
+              : 'group-hover:drop-shadow-[0_0_10px_rgba(56,189,248,0.8)] drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)]'
+          }`}
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+          }}
+        />
       </div>
 
-      {/* Chest Label / Action Prompt */}
-      <span className="text-xs font-bold text-amber-200/90 mt-2 group-hover:text-amber-100 transition-colors">
-        {t.boxNumber} {chest.chestNumber}
+      {/* Governorate Calligraphy Label with High Contrast Text Stroke */}
+      <span
+        className={`text-xs sm:text-sm font-black mt-0.5 transition-colors ${
+          isOpening
+            ? 'text-amber-300 drop-shadow-[0_2px_5px_rgba(0,0,0,1)]'
+            : 'text-white group-hover:text-cyan-200'
+        }`}
+        style={{
+          textShadow: '0 2px 4px #000, 0 -1px 2px #000, 1px 0 2px #000, -1px 0 2px #000',
+        }}
+      >
+        {governorate}
       </span>
-
-      {/* Shine overlay */}
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
     </button>
   );
 };

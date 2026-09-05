@@ -1,6 +1,5 @@
 /**
- * Authentic default prize presets for Dlilek Mlak (دليلك ملاك)
- * Includes classic TV values and iconic gag prizes
+ * Authentic default prize presets and Tunisian governorates for Dlilek Mlak (دليلك ملاك)
  */
 
 export interface GamePreset {
@@ -11,37 +10,77 @@ export interface GamePreset {
   prizes: string[];
 }
 
+export interface GovernorateInfo {
+  id: number;
+  nameAr: string;
+  nameFr: string;
+}
+
+export const TUNISIAN_GOVERNORATES: GovernorateInfo[] = [
+  { id: 1, nameAr: 'تونس', nameFr: 'Tunis' },
+  { id: 2, nameAr: 'نابل', nameFr: 'Nabeul' },
+  { id: 3, nameAr: 'زغوان', nameFr: 'Zaghouan' },
+  { id: 4, nameAr: 'بنزرت', nameFr: 'Bizerte' },
+  { id: 5, nameAr: 'منوبة', nameFr: 'Manouba' },
+  { id: 6, nameAr: 'اريانة', nameFr: 'Ariana' },
+  { id: 7, nameAr: 'الكاف', nameFr: 'Le Kef' },
+  { id: 8, nameAr: 'سليانة', nameFr: 'Siliana' },
+  { id: 9, nameAr: 'صفاقس', nameFr: 'Sfax' },
+  { id: 10, nameAr: 'قفصة', nameFr: 'Gafsa' },
+  { id: 11, nameAr: 'مدنين', nameFr: 'Médenine' },
+  { id: 12, nameAr: 'المنستير', nameFr: 'Monastir' },
+  { id: 13, nameAr: 'قابس', nameFr: 'Gabès' },
+  { id: 14, nameAr: 'المهدية', nameFr: 'Mahdia' },
+  { id: 15, nameAr: 'سوسة', nameFr: 'Sousse' },
+  { id: 16, nameAr: 'قبلي', nameFr: 'Kébili' },
+  { id: 17, nameAr: 'بوزيد', nameFr: 'Sidi Bouzid' },
+  { id: 18, nameAr: 'تطاوين', nameFr: 'Tataouine' },
+  { id: 19, nameAr: 'جندوبة', nameFr: 'Jendouba' },
+  { id: 20, nameAr: 'القصرين', nameFr: 'Kasserine' },
+  { id: 21, nameAr: 'توزر', nameFr: 'Tozeur' },
+  { id: 22, nameAr: 'القيروان', nameFr: 'Kairouan' },
+  { id: 23, nameAr: 'باجة', nameFr: 'Béja' },
+  { id: 24, nameAr: 'بن عروس', nameFr: 'Ben Arous' },
+];
+
+export function getGovernorate(boxNumber: number): GovernorateInfo {
+  const index = (boxNumber - 1) % TUNISIAN_GOVERNORATES.length;
+  return TUNISIAN_GOVERNORATES[index];
+}
+
 export const DEFAULT_PRESETS: GamePreset[] = [
   {
     id: 'classic_24',
-    nameAr: 'كلاسيك 24 صندوق (برنامج التلفزة التونسية)',
-    nameFr: 'Classique 24 Boîtes (Format TV)',
+    nameAr: 'كلاسيك 24 صندوق (برنامج دليلك ملك الرسمي)',
+    nameFr: 'Format Officiel 24 Boîtes',
     count: 24,
     prizes: [
-      '0.1 دينار (100 مليم)',
-      'كردونة فارغة',
-      'دبوزة ماء صافية',
-      'تيكي بلانات (1 د.ت)',
-      'فردة صباط',
-      'ساندوتش كفتاجي (5 د.ت)',
-      'عشوية في قمرت (50 د.ت)',
-      '100 دينار',
-      '250 دينار',
-      '500 دينار',
-      '1,000 دينار (مليون)',
-      '2,500 دينار',
-      '5,000 دينار (5 ملاين)',
-      '10,000 دينار (10 ملاين)',
-      '20,000 دينار (20 مليون)',
-      '30,000 دينار (30 مليون)',
-      'رحلة إلى تركيا لشخصين (6,000 د.ت)',
-      '50,000 دينار (50 مليون)',
-      'سيارة جديدة (55,000 د.ت)',
-      '75,000 دينار (75 مليون)',
-      '100,000 دينار (100 مليون)',
-      '200,000 دينار (200 مليون)',
-      '500,000 دينار (500 مليون)',
-      '1,000,000 دينار (المليار)',
+      // Left side (Low & Gag)
+      '0.1 د',
+      '1 د',
+      'مخدة',
+      '10 د',
+      '50 د',
+      'صحن فريت',
+      '100 د',
+      '250 د',
+      '500 د',
+      'فخذ دجاج',
+      '1.000 د',
+      '2.000 د',
+      // Right side (High & Jackpot)
+      '5.000 د',
+      '10.000 د',
+      '15.000 د',
+      '20.000 د',
+      '25.000 د',
+      '30.000 د',
+      '50.000 د',
+      '100.000 د',
+      '200.000 د',
+      '300.000 د',
+      '1.000.000 د',
+      '2.000.000 د',
     ],
   },
   {
@@ -182,17 +221,14 @@ export function generateStarterPrizes(count: number): string[] {
     return [...match.prizes];
   }
 
-  // Generate sensible values scaling from small to big
-  const result: string[] = [];
   const baseValues = [
-    'كردونة', 'دبوزة ماء', '1 د.ت', '10 د.ت', '50 د.ت', '100 د.ت',
-    '250 د.ت', '500 د.ت', '1,000 د.ت', '2,500 د.ت', '5,000 د.ت',
-    '10,000 د.ت', '20,000 د.ت', '35,000 د.ت', '50,000 د.ت', '75,000 د.ت',
-    '100,000 د.ت', '150,000 د.ت', '250,000 د.ت', '500,000 د.ت', '1,000,000 د.ت',
-    'هدية مفاجئة', 'سيارة جديدة', 'عشوية في نزل فاخر', 'تلفزة 65 بوصة', 'PlayStation 5',
-    'iPhone 16 Pro', 'رحلة سفر', '0.01 د.ت', 'بوسة من عند سامي'
+    '0.1 د', '1 د', 'مخدة', '10 د', '50 د', 'صحن فريت', '100 د', '250 د',
+    '500 د', 'فخذ دجاج', '1.000 د', '2.000 د', '5.000 د', '10.000 د',
+    '15.000 د', '20.000 د', '25.000 د', '30.000 د', '50.000 د', '100.000 د',
+    '200.000 د', '300.000 د', '1.000.000 د', '2.000.000 د'
   ];
 
+  const result: string[] = [];
   for (let i = 0; i < count; i++) {
     result.push(baseValues[i % baseValues.length]);
   }
