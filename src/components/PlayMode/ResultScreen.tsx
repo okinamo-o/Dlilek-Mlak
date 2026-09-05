@@ -21,8 +21,16 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
   const t = getTranslation(lang);
 
   useEffect(() => {
-    // Play celebratory sound
-    sounds.playVictoryFanfare();
+    // Play sound based on result (laughter if left with gag item or tiny amount, fanfare if won)
+    const isTinyOrGag =
+      (outcome.winNumericValue !== null && outcome.winNumericValue <= 10) ||
+      /مخدة|فريت|دجاج|فخذ|كردونة|صباط|ماء|ساندوتش|فارغة|صفر|بوسة|0\.1/i.test(outcome.winLabel);
+
+    if (isTinyOrGag) {
+      sounds.playLaughterSound();
+    } else {
+      sounds.playVictoryFanfare();
+    }
 
     // Trigger colorful confetti shower
     const duration = 3.5 * 1000;

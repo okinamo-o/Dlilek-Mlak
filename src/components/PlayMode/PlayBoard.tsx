@@ -117,31 +117,32 @@ export const PlayBoard: React.FC<PlayBoardProps> = ({
     sounds.playSuspenseRiser();
 
     setTimeout(() => {
-      // Small or Gag items trigger the iconic evil laugh sound
-      const isSmallOrGag =
-        (target.numericValue !== null && target.numericValue <= 100) ||
-        /مخدة|فريت|فخذ|دجاج|كردونة|صباط|ماء|ساندوتش|فارغة|صفر|بوسة|0\.1|100\s*مليم/i.test(target.label);
-
       // High jackpots trigger the dramatic sad aww sound
       const isJackpot =
         (target.numericValue !== null && target.numericValue >= 50000) ||
         /مليار|سيارة|100\s*مليون|200\s*مليون|300\s*مليون|500\s*مليون|1\.000\.000|2\.000\.000/i.test(target.label);
 
-      if (isSmallOrGag) {
-        sounds.playLaughterSound();
-        setRevealMood({
-          type: 'laugh',
-          message: lang === 'ar'
-            ? `😂 ههههه! خرجت ${target.label} والفلوس الكبيرة ما زالت في اللعبة!`
-            : `😂 Haha ! ${target.label} est sorti, les gros montants restent en jeu !`
-        });
-      } else if (isJackpot) {
+      // Low / Blue prizes eliminated is great news for the contestant!
+      const isLowOrGag =
+        (target.numericValue !== null && target.numericValue <= 2000) ||
+        /مخدة|فريت|فخذ|دجاج|كردونة|صباط|ماء|ساندوتش|فارغة|صفر|بوسة|0\.1|100\s*مليم/i.test(target.label);
+
+      if (isJackpot) {
         sounds.playSadMusic();
         setRevealMood({
           type: 'sad',
           message: lang === 'ar'
-            ? `😭 يا حسارة! طارت ${target.label} من اللعبة!`
+            ? `😭 يا خسارة! طارت ${target.label} من اللعبة!`
             : `😭 Coup dur ! ${target.label} vient d'être éliminé !`
+        });
+      } else if (isLowOrGag) {
+        // Audience cheers and applauds because eliminating low amounts protects the jackpots
+        sounds.playHappyCrowd();
+        setRevealMood({
+          type: 'laugh',
+          message: lang === 'ar'
+            ? `👏 برافو! خرجت ${target.label} والفلوس الكبيرة ما زالت في اللعبة!`
+            : `👏 Bravo ! ${target.label} est éliminé, les gros montants restent !`
         });
       } else {
         const isHigh = (target.numericValue ?? 0) >= 5000;
@@ -294,11 +295,11 @@ export const PlayBoard: React.FC<PlayBoardProps> = ({
     <div
       className="relative w-full min-h-[calc(100vh-4rem)] flex flex-col justify-between bg-cover bg-center overflow-x-hidden select-none"
       style={{
-        backgroundImage: "url('/game_assets/ramadan_stage_bg.webp')",
+        backgroundImage: "url('/game_assets/studio_stage_bg.webp')",
       }}
     >
-      {/* Twilight dark purple overlay to ensure all boxes & prize text remain ultra legible */}
-      <div className="absolute inset-0 bg-gradient-to-b from-purple-950/40 via-transparent to-black/60 pointer-events-none" />
+      {/* Studio dark blue spotlight overlay for optimal box visibility */}
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/40 via-transparent to-black/70 pointer-events-none" />
 
       {/* Top Header Controls & Round Status Banner */}
       <div className="relative z-20 w-full px-3 py-2 flex flex-wrap items-center justify-between gap-2 bg-black/60 backdrop-blur-sm border-b border-amber-500/20">
@@ -411,7 +412,7 @@ export const PlayBoard: React.FC<PlayBoardProps> = ({
             ))}
           </div>
 
-          {/* Bottom Stage Floor: Left Podium (Lucky Box) + Right Ramadan Kareem Logo */}
+          {/* Bottom Stage Floor: Left Podium (Lucky Box) + Right Studio Badge */}
           <div className="w-full flex items-end justify-between px-2 sm:px-6 pt-2">
             {/* Bottom-Left: The Illuminated Circular White Ring Podium with Box 1 */}
             <div className="flex flex-col items-center justify-center">
@@ -448,13 +449,19 @@ export const PlayBoard: React.FC<PlayBoardProps> = ({
               </span>
             </div>
 
-            {/* Bottom-Right: Ramadan Kareem Calligraphy & Crescent Lantern Logo */}
-            <div className="flex items-end justify-end pointer-events-none pb-1">
-              <img
-                src="/game_assets/ramadan_gold.png"
-                alt="Ramadan Kareem"
-                className="w-36 sm:w-48 md:w-60 lg:w-72 h-auto object-contain drop-shadow-[0_0_20px_rgba(251,191,36,0.6)]"
-              />
+            {/* Bottom-Right: Official Dlilek Mlak Studio Badge */}
+            <div className="flex items-end justify-end pointer-events-none pb-2">
+              <div className="flex flex-col items-center justify-center px-4 py-2 rounded-2xl bg-slate-950/75 border border-amber-500/40 backdrop-blur-md shadow-2xl shadow-amber-500/20">
+                <span
+                  className="font-black text-amber-300 text-base sm:text-xl tracking-wider"
+                  style={{ textShadow: '0 0 12px rgba(251,191,36,0.8), 0 2px 4px #000' }}
+                >
+                  دليلك ملاك
+                </span>
+                <span className="text-[9px] sm:text-[10px] text-slate-300 font-extrabold uppercase tracking-widest mt-0.5">
+                  Dlilek Mlak Studio
+                </span>
+              </div>
             </div>
           </div>
         </div>
