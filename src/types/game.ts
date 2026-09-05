@@ -31,7 +31,7 @@ export interface FinalOutcome {
   contestantOriginalBoxNumber: number;
   contestantOriginalBoxLabel: string;
   otherBoxNumber?: number;
-  otherBoxLabel?: number | string;
+  otherBoxLabel?: string;
   finalBoxNumber?: number;
 }
 

@@ -15,6 +15,8 @@ class SoundEngine {
   private isMuted: boolean = false;
   private currentBankerRing: HTMLAudioElement | null = null;
   private currentSuspenseAudio: HTMLAudioElement | null = null;
+  private currentOneShot: HTMLAudioElement | null = null;
+  private pendingTimeout: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
     const savedMute = localStorage.getItem('dlilek_sound_muted');
@@ -38,12 +40,36 @@ class SoundEngine {
     }
   }
 
+  public stopOneShot(): void {
+    if (this.pendingTimeout !== null) {
+      clearTimeout(this.pendingTimeout);
+      this.pendingTimeout = null;
+    }
+    if (this.currentOneShot) {
+      try {
+        this.currentOneShot.pause();
+        this.currentOneShot.currentTime = 0;
+      } catch {
+        // Ignore
+      }
+      this.currentOneShot = null;
+    }
+  }
+
+  private playOneShot(filename: string, volume = 1.0): HTMLAudioElement | null {
+    this.stopOneShot();
+    const audio = this.playFile(filename, volume);
+    this.currentOneShot = audio;
+    return audio;
+  }
+
   public toggleMute(): boolean {
     this.isMuted = !this.isMuted;
     localStorage.setItem('dlilek_sound_muted', String(this.isMuted));
     if (this.isMuted) {
       this.stopBankerRing();
       this.stopSuspense();
+      this.stopOneShot();
     }
     return this.isMuted;
   }
@@ -64,6 +90,7 @@ class SoundEngine {
    */
   public playSuspenseRiser(): void {
     this.stopSuspense();
+    this.stopOneShot();
     this.currentSuspenseAudio = this.playFile('drum_roll.mp3', 0.95);
   }
 
@@ -92,9 +119,10 @@ class SoundEngine {
    */
   public playLaughterSound(): void {
     this.stopSuspense();
-    this.playFile('evil_laugh.mp3', 1.0);
-    setTimeout(() => {
-      this.playFile('happy_crowd.mp3', 0.7);
+    this.stopOneShot();
+    this.playOneShot('evil_laugh.mp3', 1.0);
+    this.pendingTimeout = setTimeout(() => {
+      this.playOneShot('happy_crowd.mp3', 0.7);
     }, 1200);
   }
 
@@ -104,7 +132,7 @@ class SoundEngine {
    */
   public playSadMusic(): void {
     this.stopSuspense();
-    this.playFile('aww.mp3', 1.0);
+    this.playOneShot('aww.mp3', 1.0);
   }
 
   /**
@@ -113,9 +141,9 @@ class SoundEngine {
   public playRevealChime(isHighValue = true): void {
     this.stopSuspense();
     if (isHighValue) {
-      this.playFile('notify_xp.mp3', 0.95);
+      this.playOneShot('notify_xp.mp3', 0.95);
     } else {
-      this.playFile('notify_win7.mp3', 0.9);
+      this.playOneShot('notify_win7.mp3', 0.9);
     }
   }
 
@@ -123,14 +151,14 @@ class SoundEngine {
    * 👏 Grand Crowd Applause & Cheers
    */
   public playCrowdApplause(): void {
-    this.playFile('applause.mp3', 0.9);
+    this.playOneShot('applause.mp3', 0.9);
   }
 
   /**
    * Happy crowd "Yeah!"
    */
   public playHappyCrowd(): void {
-    this.playFile('happy_crowd.mp3', 0.9);
+    this.playOneShot('happy_crowd.mp3', 0.9);
   }
 
   /**
@@ -138,6 +166,7 @@ class SoundEngine {
    */
   public startBankerRing(): void {
     this.stopBankerRing();
+    this.stopOneShot();
     if (this.isMuted) return;
     this.currentBankerRing = this.playFile('phone_ring.mp3', 0.9, true);
   }
@@ -159,9 +188,10 @@ class SoundEngine {
    */
   public playDealSound(): void {
     this.stopBankerRing();
-    this.playFile('happy_crowd.mp3', 0.95);
-    setTimeout(() => {
-      this.playFile('applause.mp3', 0.95);
+    this.stopOneShot();
+    this.playOneShot('happy_crowd.mp3', 0.95);
+    this.pendingTimeout = setTimeout(() => {
+      this.playOneShot('applause.mp3', 0.95);
     }, 500);
   }
 
@@ -177,9 +207,11 @@ class SoundEngine {
    * Victory grand fanfare for the result screen
    */
   public playVictoryFanfare(): void {
-    this.playFile('applause.mp3', 1.0);
-    setTimeout(() => {
-      this.playFile('happy_crowd.mp3', 0.9);
+    this.stopBankerRing();
+    this.stopOneShot();
+    this.playOneShot('applause.mp3', 1.0);
+    this.pendingTimeout = setTimeout(() => {
+      this.playOneShot('happy_crowd.mp3', 0.9);
     }, 400);
   }
 }

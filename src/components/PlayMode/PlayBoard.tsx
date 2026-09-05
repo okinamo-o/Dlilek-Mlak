@@ -14,12 +14,16 @@ interface PlayBoardProps {
   initialChests: Chest[];
   lang: Language;
   onNewGame: () => void;
+  isMuted: boolean;
+  onToggleSound: () => void;
 }
 
 export const PlayBoard: React.FC<PlayBoardProps> = ({
   initialChests,
   lang,
   onNewGame,
+  isMuted,
+  onToggleSound,
 }) => {
   const t = getTranslation(lang);
 
@@ -27,7 +31,6 @@ export const PlayBoard: React.FC<PlayBoardProps> = ({
   const [chests, setChests] = useState<Chest[]>(initialChests);
   const [phase, setPhase] = useState<GamePhase>('pick_contestant_box');
   const [contestantBoxId, setContestantBoxId] = useState<number | null>(1); // Default to Box 1 like the reference game
-  const [isMuted, setIsMuted] = useState<boolean>(() => sounds.getIsMuted());
 
   // Elimination schedule & tracking
   const [schedule] = useState<number[]>(() => getRoundSchedule(initialChests.length));
@@ -274,11 +277,6 @@ export const PlayBoard: React.FC<PlayBoardProps> = ({
     setPhase('result');
   };
 
-  const toggleSound = () => {
-    const next = sounds.toggleMute();
-    setIsMuted(next);
-  };
-
   // If in Result Screen:
   if (phase === 'result' && finalOutcome) {
     return (
@@ -349,7 +347,7 @@ export const PlayBoard: React.FC<PlayBoardProps> = ({
         <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={toggleSound}
+            onClick={onToggleSound}
             className="p-1.5 rounded-lg bg-slate-900/80 border border-slate-700 hover:border-amber-400 text-slate-300 hover:text-amber-300 transition-colors"
             title={isMuted ? 'Unmute' : 'Mute'}
           >
@@ -485,15 +483,19 @@ export const PlayBoard: React.FC<PlayBoardProps> = ({
       )}
 
       {/* Final 2 Chests Standoff Modal */}
-      {phase === 'final_swap' && (
-        <FinalSwapModal
-          contestantChest={contestantChest}
-          otherChest={chests.find((c) => !c.isOpen && c.id !== contestantChest.id)!}
-          onChooseKeep={handleKeepBox}
-          onChooseSwap={handleSwapBox}
-          lang={lang}
-        />
-      )}
+      {phase === 'final_swap' && (() => {
+        const otherChest = chests.find((c) => !c.isOpen && c.id !== contestantChest.id);
+        if (!otherChest) return null;
+        return (
+          <FinalSwapModal
+            contestantChest={contestantChest}
+            otherChest={otherChest}
+            onChooseKeep={handleKeepBox}
+            onChooseSwap={handleSwapBox}
+            lang={lang}
+          />
+        );
+      })()}
     </div>
   );
 };

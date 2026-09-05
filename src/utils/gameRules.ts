@@ -122,6 +122,19 @@ export function parsePrizeNumericValue(label: string): number | null {
 
   const trimmed = label.trim();
 
+  // If label contains parenthesized expression with numbers (e.g. "iPhone 16 Pro (4,500 د.ت)"),
+  // prioritize extracting the parenthesized amount as the actual prize value.
+  const parenMatches = trimmed.matchAll(/\(([^)]+)\)/g);
+  for (const match of parenMatches) {
+    const inner = match[1].trim();
+    if (inner && inner !== trimmed) {
+      const innerVal = parsePrizeNumericValue(inner);
+      if (innerVal !== null) {
+        return innerVal;
+      }
+    }
+  }
+
   // Gag prizes mapping matching official game value rankings
   if (/مخد/i.test(trimmed)) return 2;
   if (/فريت/i.test(trimmed)) return 75;
@@ -163,6 +176,14 @@ export function parsePrizeNumericValue(label: string): number | null {
   if (decimalMatch) {
     const dec = parseFloat(decimalMatch[0]);
     if (!isNaN(dec)) return dec;
+  }
+
+  // Look for number with explicit currency marker if there's any (e.g. "Car 2024 - 35,000 DT")
+  const currencyMatch = trimmed.match(/(\d[\d,.]*)\s*(?:د\.ت|دنانير|دينار|DT|dt)\b/i)
+    || trimmed.match(/(?:د\.ت|دنانير|دينار|DT|dt)\s*(\d[\d,.]*)/i);
+  if (currencyMatch && currencyMatch[1] && currencyMatch[1] !== trimmed) {
+    const candidate = parsePrizeNumericValue(currencyMatch[1]);
+    if (candidate !== null) return candidate;
   }
 
   // Clean numbers

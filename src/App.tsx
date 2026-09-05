@@ -64,6 +64,8 @@ export function App() {
             initialChests={activeChests}
             lang={lang}
             onNewGame={handleEndGameToSetup}
+            isMuted={isMuted}
+            onToggleSound={toggleSound}
           />
         )}
       </main>

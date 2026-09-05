@@ -172,7 +172,11 @@ export const HostSetupScreen: React.FC<HostSetupScreenProps> = ({
 
   // Prepare and Launch Game
   const handleLaunchGame = () => {
-    localStorage.setItem('dlilek_current_prizes', JSON.stringify(labels));
+    try {
+      localStorage.setItem('dlilek_current_prizes', JSON.stringify(labels));
+    } catch (e) {
+      console.warn('Unable to persist prizes to localStorage:', e);
+    }
 
     const finalChests: Chest[] = labels.map((label, idx) => {
       const parsed = parsePrizeNumericValue(label);
